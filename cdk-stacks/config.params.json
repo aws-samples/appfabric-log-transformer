@@ -1,0 +1,11 @@
+{
+    "CdkAppName": "AFTransformer",
+    "CdkBackendStack": "AFTransformerBackend",
+    "hierarchy": "/AFTransformer/",
+    "parameters": [],
+    "tags": {
+        "project": "Amazon AppFabric Log Transformer starter project",
+        "os-code-source": "https://github.com/aws-samples/amazon-appfabric-log-transformer"
+    }
+
+}

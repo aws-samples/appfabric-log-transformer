@@ -1,0 +1,85 @@
+#set($jsonTool='')
+{
+    "@timestamp": "$!jsonTool.convertTime($!{time})",
+    "agent": {
+        "version": "$!{metadata.version}"
+    },
+    "client": {
+        #if( ${device.ip} )
+        "ip": "${device.ip}", 
+        #elseif( $metadata.product.uid == 'salesforce' )
+        "ip": "$jsonTool.retrieveItemFromRaw($!{raw_data},'CLIENT_IP')",
+        #else
+        "ip": "",
+        #end
+        "user": {
+            "id": "$!{actor.user.type_id}"
+        }
+    },
+    "device": {
+        "id": "$!{device.id}"
+    },
+    "event": {
+        "action": "$!{metadata.event_code}",
+        "category": "$!{class_name}",
+        "code": "$!{activity_id}",
+        "id": "$!{category_uid}",
+        "module": "$!{actor.user.type}",
+        "severity": "$!{severity_id}",
+        "original": $!jsonTool.toEscapedJson($!{raw_data}),
+        "outcome": "$!{status}",
+        #if( $metadata.product.uid == 'salesforce' )
+        "reason": "$jsonTool.retrieveItemFromRaw($!{raw_data},'EXCEPTION_MESSAGE')",
+        #else
+        "reason": "",
+        #end
+        "type": "$!{category_name}"
+    },
+    "host": {
+        "id": "$!{device.type_id}",
+        "type": "$!{device.type}"
+    },
+    "log": {
+        "level": ""
+    },
+    "message": "$!{type_name}",
+    "observer": {
+        "hostname": "$!{metadata.profiles[0]}",
+        #if($metadata.product.uid == 'salesforce' )
+        "name": "SalesForce Event Monitoring",
+        #else
+        "name": "",
+        #end
+        "product": "$!{web_resources[0].name}",
+        "serial_number": "$!{metadata.uid}",
+        "type": "$!{web_resources[0].type}",
+        "vendor": "$!{metadata.product.vendor_name}",
+        "version": "$!{metadata.log_version}"
+    },
+    "organization": {
+        #if( $metadata.product.uid == 'salesforce' )
+        "id": "$jsonTool.retrieveItemFromRaw($!{raw_data},'SESSION_KEY')"
+        #else
+        "id": ""
+        #end
+    },
+    "service": {
+        "id": "$!{metadata.product.uid}",
+        "name": "$!{metadata.product.name}",
+        "type": "$!{metadata.event_code}",
+        #if( $metadata.product.uid == 'salesforce' )
+        "version": "$jsonTool.retrieveItemFromRaw($!{raw_data},'API_VERSION')"
+        #else
+        "version": ""
+        #end
+    },
+    "user": {
+        "email": "$!{actor.user.email_addr}",
+        "id": "$!{actor.user.uid}",
+        "roles": ["$!event.USER_TYPE"]
+    },
+    "user_agent": {
+        "original": "$!{http_request.user_agent}"
+    }
+}
+#end
